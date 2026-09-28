@@ -1,0 +1,1737 @@
+````html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PSAT Practice Test</title>
+
+<style>
+
+/* =========================
+   GENERAL
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f5f5;
+    color: #1f1f1f;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    height: 64px;
+    background: #1e293b;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 24px;
+}
+
+#module-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#timer {
+    font-size: 17px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   TEST LAYOUT
+========================= */
+
+#test {
+    display: flex;
+    height: calc(100vh - 64px);
+}
+
+
+/* =========================
+   ENGLISH PASSAGE
+========================= */
+
+#passage {
+    width: 50%;
+    padding: 35px 40px;
+
+    background: white;
+    border-right: 1px solid #d1d5db;
+
+    overflow-y: auto;
+
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+
+/* =========================
+   QUESTION SIDE
+========================= */
+
+#question-area {
+    width: 50%;
+    padding: 32px 40px;
+
+    overflow-y: auto;
+
+    background: #f8f8f8;
+}
+
+
+/* =========================
+   QUESTION
+========================= */
+
+#question-number {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+#question {
+    font-size: 19px;
+    line-height: 1.5;
+    margin-bottom: 18px;
+}
+
+
+/* =========================
+   EQUATION
+========================= */
+
+#equation {
+    white-space: pre-line;
+
+    font-family: "Courier New", monospace;
+    font-size: 17px;
+
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+
+    padding: 14px;
+    margin-bottom: 20px;
+
+    display: none;
+}
+
+
+/* =========================
+   TABLE
+========================= */
+
+#table-container {
+    margin-bottom: 20px;
+}
+
+table {
+    border-collapse: collapse;
+    background: white;
+    margin: 0 auto;
+}
+
+th,
+td {
+    border: 1px solid #999;
+    padding: 9px 16px;
+    text-align: center;
+}
+
+th {
+    background: #eeeeee;
+}
+
+
+/* =========================
+   FIGURES
+========================= */
+
+#figure {
+    display: none;
+
+    max-width: 100%;
+    max-height: 420px;
+
+    object-fit: contain;
+
+    margin: 20px auto 25px auto;
+
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+
+    padding: 8px;
+}
+
+
+/* =========================
+   ANSWERS
+========================= */
+
+#options {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.option {
+    width: 100%;
+
+    padding: 15px 17px;
+
+    text-align: left;
+
+    background: white;
+    border: 1px solid #b7b7b7;
+    border-radius: 6px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    transition: background 0.15s,
+                border-color 0.15s;
+}
+
+.option:hover {
+    background: #f0f4ff;
+}
+
+.option.selected {
+    background: #dbeafe;
+    border-color: #2563eb;
+
+    box-shadow: 0 0 0 1px #2563eb inset;
+}
+
+
+/* =========================
+   STUDENT PRODUCED RESPONSE
+========================= */
+
+#answer-input {
+    width: 220px;
+
+    padding: 13px;
+
+    font-size: 18px;
+
+    border: 1px solid #999;
+    border-radius: 6px;
+
+    background: white;
+}
+
+
+/* =========================
+   CONTROLS
+========================= */
+
+.controls {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 30px;
+    padding-top: 20px;
+
+    border-top: 1px solid #ddd;
+}
+
+.controls button {
+    padding: 10px 18px;
+
+    border: none;
+    border-radius: 6px;
+
+    font-size: 15px;
+
+    cursor: pointer;
+}
+
+#prev-btn {
+    background: #e5e7eb;
+}
+
+#prev-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+#mark-btn {
+    background: #facc15;
+}
+
+#next-btn {
+    background: #2563eb;
+    color: white;
+}
+
+
+/* =========================
+   QUESTION NAVIGATOR
+========================= */
+
+#navigator {
+    position: fixed;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    min-height: 48px;
+
+    padding: 7px 12px;
+
+    background: white;
+    border-top: 1px solid #ccc;
+
+    display: flex;
+    justify-content: center;
+
+    gap: 5px;
+
+    overflow-x: auto;
+
+    z-index: 10;
+}
+
+.nav-btn {
+    min-width: 32px;
+    height: 32px;
+
+    padding: 0;
+
+    background: white;
+
+    border: 1px solid #aaa;
+    border-radius: 4px;
+
+    cursor: pointer;
+}
+
+.nav-btn.current {
+    border: 2px solid #2563eb;
+}
+
+.nav-btn.answered {
+    background: #dbeafe;
+}
+
+.nav-btn.marked {
+    background: #fef08a;
+}
+
+
+/* =========================
+   FINAL RESULTS
+========================= */
+
+#results {
+    display: none;
+
+    max-width: 900px;
+
+    margin: 60px auto;
+
+    padding: 40px;
+
+    background: white;
+
+    border-radius: 10px;
+
+    text-align: center;
+
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+#results h2 {
+    margin-top: 0;
+}
+
+#final-score {
+    font-size: 30px;
+    margin: 25px 0;
+}
+
+#final-details {
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+
+/* =========================
+   ANSWER REVIEW
+========================= */
+
+#answer-review {
+    margin-top: 35px;
+
+    text-align: left;
+
+    border-top: 1px solid #ddd;
+
+    padding-top: 25px;
+}
+
+#answer-review h3 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.review-section {
+    margin-bottom: 25px;
+}
+
+.review-section h4 {
+    margin: 0 0 10px 0;
+
+    padding: 10px 12px;
+
+    background: #1e293b;
+
+    color: white;
+
+    border-radius: 5px;
+
+    font-size: 15px;
+}
+
+.review-list {
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+
+    gap: 8px;
+}
+
+.review-item {
+    padding: 10px 12px;
+
+    background: #f8f8f8;
+
+    border: 1px solid #ddd;
+
+    border-radius: 5px;
+
+    font-size: 14px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.review-question {
+    font-weight: 600;
+}
+
+.review-answer {
+    font-weight: 600;
+    color: #2563eb;
+}
+
+.review-answer.unanswered {
+    color: #777;
+    font-weight: normal;
+}
+
+
+/* =========================
+   RESTART
+========================= */
+
+#restart-btn {
+    margin-top: 25px;
+
+    padding: 12px 22px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: #2563eb;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 16px;
+}
+
+
+/* =========================
+   MATH LAYOUT
+========================= */
+
+body.math-mode #passage {
+    display: none;
+}
+
+body.math-mode #question-area {
+    width: 100%;
+
+    max-width: 1000px;
+
+    margin: 0 auto;
+
+    background: #f8f8f8;
+}
+
+body.math-mode #question {
+    max-width: 850px;
+
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body.math-mode #equation {
+    max-width: 700px;
+
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body.math-mode #table-container {
+    max-width: 700px;
+
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body.math-mode #options {
+    max-width: 700px;
+
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 800px) {
+
+    #test {
+        height: calc(100vh - 64px);
+    }
+
+    #passage {
+        display: none;
+    }
+
+    #question-area {
+        width: 100%;
+        padding: 25px 20px;
+    }
+
+    body.math-mode #question-area {
+        width: 100%;
+    }
+
+    #results {
+        margin: 25px 15px;
+        padding: 25px 18px;
+    }
+
+    .review-list {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<header>
+
+    <h1 id="module-title">
+        PSAT Practice Test
+    </h1>
+
+    <div id="timer">
+        32:00
+    </div>
+
+</header>
+
+
+<div id="test">
+
+    <!-- English passage -->
+    <div id="passage"></div>
+
+
+    <!-- Question -->
+    <div id="question-area">
+
+        <div id="question-number"></div>
+
+        <div id="question"></div>
+
+        <div id="equation"></div>
+
+        <div id="table-container"></div>
+
+        <img
+            id="figure"
+            alt="Question figure"
+        >
+
+        <div id="options"></div>
+
+        <input
+            id="answer-input"
+            type="text"
+            placeholder="Enter answer"
+        >
+
+        <div class="controls">
+
+            <button
+                id="prev-btn"
+                onclick="previousQuestion()"
+            >
+                Back
+            </button>
+
+            <button
+                id="mark-btn"
+                onclick="toggleMark()"
+            >
+                Mark for Review
+            </button>
+
+            <button
+                id="next-btn"
+                onclick="nextQuestion()"
+            >
+                Next
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div id="navigator"></div>
+
+
+<div id="results">
+
+    <h2>Test Complete</h2>
+
+    <div id="final-score"></div>
+
+    <div id="final-details"></div>
+
+    <!-- Answer review -->
+    <div id="answer-review">
+
+        <h3>Your Answers</h3>
+
+        <div id="review-content"></div>
+
+    </div>
+
+    <button
+        id="restart-btn"
+        onclick="restartTest()"
+    >
+        Restart Test
+    </button>
+
+</div>
+
+
+<!-- =========================
+     QUESTION DATA
+========================= -->
+
+<script src="english_questions.js"></script>
+<script src="math_questions.js"></script>
+
+
+<script>
+
+/* =========================
+   TEST STATE
+========================= */
+
+let stage = "english1";
+
+let questions = [];
+
+let questionIndex = 0;
+
+let answers = {};
+
+let marked = {};
+
+let timer;
+
+let timeLeft = 32 * 60;
+
+
+/* =========================
+   MODULE TIMES
+========================= */
+
+function getModuleTime(stageName) {
+
+    if (
+        stageName === "english1" ||
+        stageName === "english2"
+    ) {
+        return 32 * 60;
+    }
+
+    if (
+        stageName === "math1" ||
+        stageName === "math2"
+    ) {
+        return 35 * 60;
+    }
+
+    return 32 * 60;
+
+}
+
+
+/* =========================
+   CLEAN QUESTION TEXT
+========================= */
+
+function cleanText(text) {
+
+    return String(text || "")
+        .replace(/```/g, "")
+        .trim();
+
+}
+
+
+/* =========================
+   UNIQUE ANSWER KEY
+========================= */
+
+function answerKey(stageName, questionId) {
+
+    return `${stageName}_${questionId}`;
+
+}
+
+
+/* =========================
+   GET CURRENT MODULE
+========================= */
+
+function getModule(stageName) {
+
+    if (stageName === "english1") {
+        return englishQuizData.module1;
+    }
+
+    if (stageName === "english2") {
+        return englishQuizData.selectedModule;
+    }
+
+    if (stageName === "math1") {
+        return mathQuizData.module1;
+    }
+
+    if (stageName === "math2") {
+        return mathQuizData.selectedModule;
+    }
+
+    return [];
+
+}
+
+
+/* =========================
+   MODULE TITLE
+========================= */
+
+function getStageTitle() {
+
+    if (stage === "english1") {
+        return "Reading & Writing — Module 1";
+    }
+
+    if (stage === "english2") {
+        return "Reading & Writing — Module 2";
+    }
+
+    if (stage === "math1") {
+        return "Math — Module 1";
+    }
+
+    if (stage === "math2") {
+        return "Math — Module 2";
+    }
+
+    return "PSAT Practice Test";
+
+}
+
+
+/* =========================
+   LOAD MODULE
+========================= */
+
+function loadStage() {
+
+    questions = getModule(stage);
+
+    if (!questions || questions.length === 0) {
+
+        finishTest();
+
+        return;
+    }
+
+    questionIndex = 0;
+
+    timeLeft = getModuleTime(stage);
+
+    clearInterval(timer);
+
+    timer = setInterval(updateTimer, 1000);
+
+    document.getElementById("module-title").textContent =
+        getStageTitle();
+
+    updateTimer();
+
+    render();
+
+}
+
+
+/* =========================
+   RENDER QUESTION
+========================= */
+
+function render() {
+
+    const q = questions[questionIndex];
+
+    const key = answerKey(stage, q.id);
+
+    const isMath =
+        stage === "math1" ||
+        stage === "math2";
+
+    document.body.classList.toggle(
+        "math-mode",
+        isMath
+    );
+
+
+    /* Question number */
+
+    document.getElementById("question-number").textContent =
+        `Question ${questionIndex + 1} of ${questions.length}`;
+
+
+    /* Question text */
+
+    document.getElementById("question").textContent =
+        cleanText(q.question);
+
+
+    /* =========================
+       PASSAGE
+    ========================= */
+
+    const passage =
+        document.getElementById("passage");
+
+    if (
+        !isMath &&
+        q.passage
+    ) {
+
+        passage.textContent =
+            cleanText(q.passage);
+
+        passage.style.display = "block";
+
+    } else {
+
+        passage.textContent = "";
+
+        passage.style.display = "none";
+
+    }
+
+
+    /* =========================
+       EQUATION
+    ========================= */
+
+    const equation =
+        document.getElementById("equation");
+
+    if (q.equation) {
+
+        equation.textContent =
+            cleanText(q.equation);
+
+        equation.style.display = "block";
+
+    } else {
+
+        equation.textContent = "";
+
+        equation.style.display = "none";
+
+    }
+
+
+    /* =========================
+       TABLE
+    ========================= */
+
+    const tableContainer =
+        document.getElementById("table-container");
+
+    tableContainer.innerHTML = "";
+
+    if (q.table) {
+
+        const table =
+            document.createElement("table");
+
+        const headerRow =
+            document.createElement("tr");
+
+        q.table.headers.forEach(header => {
+
+            const th =
+                document.createElement("th");
+
+            th.textContent =
+                cleanText(header);
+
+            headerRow.appendChild(th);
+
+        });
+
+        table.appendChild(headerRow);
+
+
+        q.table.rows.forEach(row => {
+
+            const tr =
+                document.createElement("tr");
+
+            row.forEach(value => {
+
+                const td =
+                    document.createElement("td");
+
+                td.textContent =
+                    cleanText(value);
+
+                tr.appendChild(td);
+
+            });
+
+            table.appendChild(tr);
+
+        });
+
+        tableContainer.appendChild(table);
+
+    }
+
+
+    /* =========================
+       FIGURE
+    ========================= */
+
+    const figure =
+        document.getElementById("figure");
+
+    if (q.figure) {
+
+        figure.src =
+            `figures/${q.figure}.png`;
+
+        figure.alt =
+            `Figure for question ${q.id}`;
+
+        figure.style.display =
+            "block";
+
+    } else {
+
+        figure.removeAttribute("src");
+
+        figure.style.display =
+            "none";
+
+    }
+
+
+    /* =========================
+       ANSWERS
+    ========================= */
+
+    const options =
+        document.getElementById("options");
+
+    options.innerHTML = "";
+
+    const input =
+        document.getElementById("answer-input");
+
+
+    if (q.type === "student-produced") {
+
+        input.style.display =
+            "block";
+
+        input.value =
+            answers[key] || "";
+
+        input.oninput = function() {
+
+            answers[key] =
+                input.value;
+
+            updateNavigator();
+
+        };
+
+    } else {
+
+        input.style.display =
+            "none";
+
+        q.options.forEach(option => {
+
+            const button =
+                document.createElement("button");
+
+            button.className =
+                "option";
+
+            button.textContent =
+                cleanText(option);
+
+
+            const letter =
+                option.trim().charAt(0);
+
+
+            if (answers[key] === letter) {
+
+                button.classList.add(
+                    "selected"
+                );
+
+            }
+
+
+            button.onclick = function() {
+
+                answers[key] =
+                    letter;
+
+                render();
+
+            };
+
+
+            options.appendChild(button);
+
+        });
+
+    }
+
+
+    /* =========================
+       BUTTONS
+    ========================= */
+
+    document.getElementById("mark-btn").textContent =
+        marked[key]
+            ? "Unmark"
+            : "Mark for Review";
+
+
+    document.getElementById("prev-btn").disabled =
+        questionIndex === 0;
+
+
+    document.getElementById("next-btn").textContent =
+        questionIndex === questions.length - 1
+            ? "Next Module"
+            : "Next";
+
+
+    updateNavigator();
+
+}
+
+
+/* =========================
+   NEXT QUESTION
+========================= */
+
+function nextQuestion() {
+
+    if (
+        questionIndex <
+        questions.length - 1
+    ) {
+
+        questionIndex++;
+
+        render();
+
+    } else {
+
+        nextStage();
+
+    }
+
+}
+
+
+/* =========================
+   PREVIOUS QUESTION
+========================= */
+
+function previousQuestion() {
+
+    if (questionIndex > 0) {
+
+        questionIndex--;
+
+        render();
+
+    }
+
+}
+
+
+/* =========================
+   ADAPTIVE ROUTING
+========================= */
+
+function nextStage() {
+
+    if (stage === "english1") {
+
+        routeEnglish();
+
+        return;
+    }
+
+
+    if (stage === "english2") {
+
+        stage = "math1";
+
+        loadStage();
+
+        return;
+    }
+
+
+    if (stage === "math1") {
+
+        routeMath();
+
+        return;
+    }
+
+
+    if (stage === "math2") {
+
+        finishTest();
+
+    }
+
+}
+
+
+/* =========================
+   ENGLISH ADAPTIVE ROUTING
+========================= */
+
+function routeEnglish() {
+
+    const result =
+        evaluateEnglishModule1(
+            getAnswersForModule("english1")
+        );
+
+
+    englishQuizData.selectedModule =
+        result.nextModuleQuestions;
+
+
+    stage = "english2";
+
+    loadStage();
+
+}
+
+
+/* =========================
+   MATH ADAPTIVE ROUTING
+========================= */
+
+function routeMath() {
+
+    const result =
+        evaluateMathModule1(
+            getAnswersForModule("math1")
+        );
+
+
+    mathQuizData.selectedModule =
+        result.nextModuleQuestions;
+
+
+    stage = "math2";
+
+    loadStage();
+
+}
+
+
+/* =========================
+   GET ANSWERS FOR MODULE
+========================= */
+
+function getAnswersForModule(moduleName) {
+
+    const result = {};
+
+    Object.keys(answers).forEach(key => {
+
+        if (
+            key.startsWith(
+                moduleName + "_"
+            )
+        ) {
+
+            const questionId =
+                key.substring(
+                    moduleName.length + 1
+                );
+
+            result[questionId] =
+                answers[key];
+
+        }
+
+    });
+
+    return result;
+
+}
+
+
+/* =========================
+   MARK QUESTION
+========================= */
+
+function toggleMark() {
+
+    const q =
+        questions[questionIndex];
+
+    const key =
+        answerKey(stage, q.id);
+
+    marked[key] =
+        !marked[key];
+
+    render();
+
+}
+
+
+/* =========================
+   NAVIGATOR
+========================= */
+
+function updateNavigator() {
+
+    const navigator =
+        document.getElementById("navigator");
+
+    navigator.innerHTML = "";
+
+
+    questions.forEach((q, i) => {
+
+        const button =
+            document.createElement("button");
+
+        const key =
+            answerKey(stage, q.id);
+
+
+        button.className =
+            "nav-btn";
+
+        button.textContent =
+            i + 1;
+
+
+        if (i === questionIndex) {
+
+            button.classList.add(
+                "current"
+            );
+
+        }
+
+
+        if (answers[key]) {
+
+            button.classList.add(
+                "answered"
+            );
+
+        }
+
+
+        if (marked[key]) {
+
+            button.classList.add(
+                "marked"
+            );
+
+        }
+
+
+        button.onclick = function() {
+
+            questionIndex = i;
+
+            render();
+
+        };
+
+
+        navigator.appendChild(button);
+
+    });
+
+}
+
+
+/* =========================
+   TIMER
+========================= */
+
+function updateTimer() {
+
+    const minutes =
+        Math.floor(
+            timeLeft / 60
+        );
+
+    const seconds =
+        timeLeft % 60;
+
+
+    document.getElementById("timer")
+        .textContent =
+        `${minutes}:${String(seconds).padStart(2, "0")}`;
+
+
+    if (timeLeft <= 0) {
+
+        clearInterval(timer);
+
+        nextStage();
+
+        return;
+    }
+
+
+    timeLeft--;
+
+}
+
+
+/* =========================
+   ANSWER REVIEW
+========================= */
+
+function createReviewSection(
+    title,
+    moduleName,
+    moduleQuestions
+) {
+
+    if (
+        !moduleQuestions ||
+        moduleQuestions.length === 0
+    ) {
+        return "";
+    }
+
+
+    let html = `
+        <div class="review-section">
+            <h4>${title}</h4>
+            <div class="review-list">
+    `;
+
+
+    moduleQuestions.forEach((q, index) => {
+
+        const key =
+            answerKey(moduleName, q.id);
+
+        let selectedAnswer =
+            answers[key];
+
+
+        if (
+            selectedAnswer === undefined ||
+            selectedAnswer === null ||
+            String(selectedAnswer).trim() === ""
+        ) {
+
+            selectedAnswer = "—";
+
+        } else {
+
+            selectedAnswer =
+                cleanText(selectedAnswer);
+
+        }
+
+
+        const unanswered =
+            selectedAnswer === "—";
+
+
+        html += `
+            <div class="review-item">
+                <span class="review-question">
+                    Q${index + 1}
+                </span>
+
+                <span class="review-answer ${
+                    unanswered
+                        ? "unanswered"
+                        : ""
+                }">
+                    ${selectedAnswer}
+                </span>
+            </div>
+        `;
+
+    });
+
+
+    html += `
+            </div>
+        </div>
+    `;
+
+
+    return html;
+
+}
+
+
+function showAnswerReview() {
+
+    const review =
+        document.getElementById("review-content");
+
+
+    review.innerHTML = "";
+
+
+    review.innerHTML +=
+        createReviewSection(
+            "Reading & Writing — Module 1",
+            "english1",
+            englishQuizData.module1
+        );
+
+
+    review.innerHTML +=
+        createReviewSection(
+            "Reading & Writing — Module 2",
+            "english2",
+            englishQuizData.selectedModule
+        );
+
+
+    review.innerHTML +=
+        createReviewSection(
+            "Math — Module 1",
+            "math1",
+            mathQuizData.module1
+        );
+
+
+    review.innerHTML +=
+        createReviewSection(
+            "Math — Module 2",
+            "math2",
+            mathQuizData.selectedModule
+        );
+
+}
+
+
+/* =========================
+   FINAL RESULTS
+========================= */
+
+function finishTest() {
+
+    clearInterval(timer);
+
+
+    let totalCorrect = 0;
+
+    let totalQuestions = 0;
+
+    let englishCorrect = 0;
+
+    let englishTotal = 0;
+
+    let mathCorrect = 0;
+
+    let mathTotal = 0;
+
+
+    const modules = [
+
+        [
+            "english1",
+            englishQuizData.module1
+        ],
+
+        [
+            "english2",
+            englishQuizData.selectedModule
+        ],
+
+        [
+            "math1",
+            mathQuizData.module1
+        ],
+
+        [
+            "math2",
+            mathQuizData.selectedModule
+        ]
+
+    ];
+
+
+    modules.forEach(
+        ([moduleName, moduleQuestions]) => {
+
+            if (!moduleQuestions) {
+                return;
+            }
+
+
+            moduleQuestions.forEach(q => {
+
+                const key =
+                    answerKey(
+                        moduleName,
+                        q.id
+                    );
+
+
+                const userAnswer =
+                    String(
+                        answers[key] || ""
+                    )
+                    .trim()
+                    .toUpperCase();
+
+
+                const correctAnswer =
+                    String(
+                        q.correctAnswer
+                    )
+                    .trim()
+                    .toUpperCase();
+
+
+                totalQuestions++;
+
+
+                if (
+                    userAnswer ===
+                    correctAnswer
+                ) {
+
+                    totalCorrect++;
+
+
+                    if (
+                        moduleName.startsWith(
+                            "english"
+                        )
+                    ) {
+
+                        englishCorrect++;
+
+                    } else {
+
+                        mathCorrect++;
+
+                    }
+
+                }
+
+
+                if (
+                    moduleName.startsWith(
+                        "english"
+                    )
+                ) {
+
+                    englishTotal++;
+
+                } else {
+
+                    mathTotal++;
+
+                }
+
+            });
+
+        }
+    );
+
+
+    document.getElementById("test")
+        .style.display = "none";
+
+
+    document.getElementById("navigator")
+        .style.display = "none";
+
+
+    document.getElementById("results")
+        .style.display = "block";
+
+
+    document.getElementById("final-score")
+        .textContent =
+        `${totalCorrect} / ${totalQuestions} correct`;
+
+
+    document.getElementById("final-details")
+        .innerHTML =
+        `Reading & Writing: ${englishCorrect} / ${englishTotal}<br>
+         Math: ${mathCorrect} / ${mathTotal}`;
+
+
+    /* Show answer review */
+
+    showAnswerReview();
+
+}
+
+
+/* =========================
+   RESTART
+========================= */
+
+function restartTest() {
+
+    clearInterval(timer);
+
+    stage = "english1";
+
+    questions = [];
+
+    questionIndex = 0;
+
+    answers = {};
+
+    marked = {};
+
+
+    englishQuizData.selectedModule =
+        null;
+
+    mathQuizData.selectedModule =
+        null;
+
+
+    document.getElementById("results")
+        .style.display = "none";
+
+
+    document.getElementById("test")
+        .style.display = "flex";
+
+
+    document.getElementById("navigator")
+        .style.display = "flex";
+
+
+    loadStage();
+
+}
+
+
+/* =========================
+   START TEST
+========================= */
+
+loadStage();
+
+</script>
+
+</body>
+</html>
+````
+
